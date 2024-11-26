@@ -1,6 +1,6 @@
 import unittest
 
-from htmlnode import HTMLNode
+from htmlnode import HTMLNode, LeafNode
 
 class TestHTMLnode(unittest.TestCase):
     def test_eq(self):
@@ -17,6 +17,23 @@ class TestHTMLnode(unittest.TestCase):
         node = HTMLNode("p", "This is a paragraph.")
         expected_string = "tag:p value:This is a paragraph. children:None props:None"
         self.assertEqual(repr(node), expected_string)
+
+
+class TestLeafNode(unittest.TestCase):
+    def test_to_html_with_tag_and_props(self):
+        node = LeafNode("a", "Click me!", {"href": "https://www.example.com"})
+        expected_html = '<a href="https://www.example.com">Click me!</a>'
+        self.assertEqual(node.to_html(), expected_html)
+    
+    def test_to_html_without_tag(self):
+        node = LeafNode(None, "Just text", {})
+        expected_html = "Just text"
+        self.assertEqual(node.to_html(), expected_html)
+
+    def test_to_html_value_error(self):
+        with self.assertRaises(ValueError):
+            node = LeafNode("p", None)
+            node.to_html()
 
 
 if __name__ == "__main__":
