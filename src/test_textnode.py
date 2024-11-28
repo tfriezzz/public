@@ -1,6 +1,6 @@
 import unittest
 
-from textnode import TextNode, TextType
+from textnode import TextNode, TextType, text_node_to_html_node 
 
 
 class TestTextNode(unittest.TestCase):
@@ -20,6 +20,14 @@ class TestTextNode(unittest.TestCase):
         node2 = TextNode("No url", TextType.LINK, url=None)
         self.assertEqual(node, node2)
 
+
+
+class TestTextNodeToHtmlNode(unittest.TestCase):
+    def test_text_conversion(self):
+        node = TextNode("Hello", TextType.TEXT)
+        html_node = text_node_to_html_node(node)
+        self.assertIsNone(html_node.tag)
+        self.assertEqual(html_node.value, "Hello")
 
 if __name__ == "__main__":
     unittest.main()
