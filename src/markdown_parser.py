@@ -1,11 +1,20 @@
-def split_nodes_delimiter(old_nodes, delimiter=None, text_type=None):
-    #new_nodes= []
-    bold_snippets = old_nodes.split("**")[1::2]
-    italic_snippets = list(filter(None, old_nodes.split("*")[1::2]))
-    code_snippets = old_nodes.split("`")[1::2]
+from textnode import TextNode, TextType, text_node_to_html_node
 
-    return bold_snippets, italic_snippets, code_snippets
+def split_nodes_delimiter(old_nodes, delimiter, text_type):
+    new_nodes = []
+    for node in old_nodes:
+        match node.text_type:
+            case TextType.TEXT:
+                pieces = node.text.split(delimiter)
+                for i in range(len(pieces)):
+                    if i % 2 == 0:
+                        new_nodes.append(TextNode(pieces[i], TextType.TEXT))
+                    if i % 2 != 0:
+                        new_nodes.append(TextNode(pieces[i], text_type))
 
-print(split_nodes_delimiter(
-    "This is a test of *italic*, **bold****bolder** and **boldest***italic2* and *italic again* and `code``snippets`"
-))
+            case _:
+                new_nodes.append(node)
+
+    return new_nodes
+
+
