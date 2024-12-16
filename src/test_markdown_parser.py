@@ -1,6 +1,6 @@
 import unittest
 from textnode import TextNode, TextType, text_node_to_html_node 
-from markdown_parser import split_nodes_delimiter
+from markdown_parser import split_nodes_delimiter, extract_markdown_images, extract_markdown_links
 
 
 class TestSplitNodesDelimiter(unittest.TestCase):
@@ -48,3 +48,17 @@ class TestSplitNodesDelimiter(unittest.TestCase):
         assert new_nodes[0].text_type == TextType.BOLD
 
 
+class TestExtractMarkdownImages(unittest.TestCase):
+    def test(self):
+        text = "This is text with a ![rick roll](https://i.imgur.com/aKaOqIh.gif) and ![obi wan](https://i.imgur.com/fJRm4Vk.jpeg)"
+        should_be_value = [("rick roll", "https://i.imgur.com/aKaOqIh.gif"), ("obi wan", "https://i.imgur.com/fJRm4Vk.jpeg")]
+        is_value = extract_markdown_images(text)
+        self.assertEqual(should_be_value, is_value)
+
+
+class TestExtractMarkdownLinks(unittest.TestCase):
+    def test(self):
+        text = "This is text with a link [to boot dev](https://www.boot.dev) and [to youtube](https://www.youtube.com/@bootdotdev)"
+        should_be_value = [("to boot dev", "https://www.boot.dev"), ("to youtube", "https://www.youtube.com/@bootdotdev")]
+        is_value = extract_markdown_links(text)
+        self.assertEqual(should_be_value, is_value)
