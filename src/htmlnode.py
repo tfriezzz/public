@@ -5,6 +5,7 @@ class HTMLNode():
         self.children = children
         self.props = props
 
+
     def to_html(self):
         raise NotImplementedError
 
@@ -41,7 +42,6 @@ class LeafNode(HTMLNode):
         else:
             props_string = str(self.props_to_html()) if self.props else ""
             return f"<{self.tag}{props_string}>{self.value}</{self.tag}>"
-
 
 
 class ParentNode(HTMLNode):

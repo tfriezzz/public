@@ -2,7 +2,6 @@ import unittest
 from textnode import TextNode, TextType, text_node_to_html_node 
 from markdown_parser import split_nodes_delimiter, extract_markdown_images, extract_markdown_links
 
-
 class TestSplitNodesDelimiter(unittest.TestCase):
     def test_single_delimiter(self):
         node = TextNode("Test with **one** delimiter", TextType.TEXT)
