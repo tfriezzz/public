@@ -77,10 +77,9 @@ class TestSplitNodesImage(unittest.TestCase):
 class TestSplitNodesLink(unittest.TestCase):
     def test_single_link(self):
         node = TextNode("This is text with a link [to boot dev](https://www.boot.dev)", TextType.TEXT)
-        new_nodes = split_nodes_image([node])
+        new_nodes = split_nodes_link([node])
         assert new_nodes[0].text == "This is text with a link "
         assert new_nodes[0].text_type == TextType.TEXT
         assert new_nodes[1].text == "to boot dev"
         assert new_nodes[1].text_type == TextType.LINK
         assert new_nodes[1].url == "https://www.boot.dev"
-

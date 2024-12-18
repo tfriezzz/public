@@ -59,5 +59,4 @@ class ParentNode(HTMLNode):
             children_string = ""
             for child in self.children:
                 children_string += str(child.to_html())
-                print(f"test: {children_string}")
             return f"<{self.tag}{html_string}>{children_string}</{self.tag}>"
