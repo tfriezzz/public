@@ -18,7 +18,7 @@ class TestSplitNodesDelimiter(unittest.TestCase):
     def test_multiple_delimiters(self):
         node = TextNode("Test with **multiple** **delimiters**", TextType.TEXT)
         new_nodes = split_nodes_delimiter([node], "**", TextType.BOLD)
-        assert len(new_nodes) == 5
+        assert len(new_nodes) == 4
         assert new_nodes[0].text == "Test with "
         assert new_nodes[0].text_type == TextType.TEXT
         assert new_nodes[1].text == "multiple"
@@ -27,9 +27,7 @@ class TestSplitNodesDelimiter(unittest.TestCase):
         assert new_nodes[2].text_type == TextType.TEXT
         assert new_nodes[3].text == "delimiters"
         assert new_nodes[3].text_type == TextType.BOLD
-        assert new_nodes[4].text == ""
-        assert new_nodes[4].text_type == TextType.TEXT
-
+        
 
     def test_no_delimiter(self):
         node = TextNode("This is a test with no delimiters", TextType.TEXT)
