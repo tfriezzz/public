@@ -1,23 +1,36 @@
+from enum import Enum
+import re
 from markdown_parser import *
 from htmlnode import *
 from textnode import *
 
+class BlockType(Enum):
+    PARAGRAPH = "paragraph"
+    HEADING = "heading"
+    CODE = "code"
+        # Other block types...
 
 def markdown_to_blocks(markdown):
-    block = list(map(str.strip, (markdown.split("\n\n"))))
-    return block
+    blocks = list(map(str.strip, (markdown.split("\n\n"))))
+    return blocks
 
 
-markdown = """# This is a heading
+def block_to_block_type(block):
+    match block:
+        case _ if re.match(r"^```.*```$", block, re.DOTALL):
+            return "code"
+            
+        case _ if re.match(r"^#{1,6}\s\w+", block):
+            return "heading"
+        
+        case _ if re.match(r"^>\w+", block):
+            return "quote"
 
-This is a paragraph of text. It has some **bold** and *italic* words inside of it.
+        case _ if re.match(r"^(\* |- )\w+", block, re.MULTILINE):
+            return "unordered_list"
 
-* This is the first list item in a list block
-* This is a list item
-* This is another list item"""
+        case _:
+            print(f"block: {block}, type: paragraph")
+            return "paragraph"
 
-#print(f"test: {markdown}")
 
-#print(markdown_to_blocks(markdown))
-for block in markdown_to_blocks(markdown):
-    print(block)
