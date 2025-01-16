@@ -55,3 +55,40 @@ class TestBlockToBlockType(unittest.TestCase):
         block_type_2 = block_to_block_type(block_2)
         self.assertEqual(block_type, "ordered_list")
         self.assertEqual(block_type_2, "ordered_list")
+
+
+class TestMarkdownToHTML(unittest.TestCase):
+    def test_paragraph(self):
+        node = markdown_to_html_node("This is a paragraph")
+        self.assertEqual(node.to_html(), "<div><p>This is a paragraph</p></div>")
+    
+
+    def test_heading(self):
+        node = markdown_to_html_node("# Heading")
+        self.assertEqual(node.to_html(), "<div><h1>Heading</h1></div>")
+
+
+    def test_code(self):
+        node = markdown_to_html_node("```Code```")
+        self.assertEqual(node.to_html(), "<div><pre><code>Code</code></pre></div>")
+
+
+    def test_quote(self):
+        node = markdown_to_html_node(">Quote") # Fix optional space
+        self.assertEqual(node.to_html(), "<div><blockquote>Quote</blockquote></div>")
+
+
+    def test_unordered_list(self):
+        markdown = "- item one\n- item two\n- item three"
+        node = markdown_to_html_node(markdown)
+        
+        expected_html = "<div><ul><li>item one</li><li>item two</li><li>item three</li></ul></div>"
+        assert node.to_html() == expected_html
+
+
+    def test_ordered_list(self):
+        markdown = "1. item one\n2. item two\n3. item three"
+        node = markdown_to_html_node(markdown)
+        
+        expected_html = "<div><ol><li>item one</li><li>item two</li><li>item three</li></ol></div>"
+        assert node.to_html() == expected_html
