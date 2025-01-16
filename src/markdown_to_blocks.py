@@ -15,6 +15,20 @@ def markdown_to_blocks(markdown):
     return blocks
 
 
+def unordered_list_checker(block):
+    sub_blocks = markdown_to_blocks(block)
+    for block in sub_blocks:
+        if re.match(r"^(\* |- )\w+", block, re.MULTILINE):
+            return "unordered_list"
+
+
+def ordered_list_checker(block):
+    sub_blocks = list(map(str.strip, (block.split("\n"))))
+    blocks = [bool(re.match(r"^\d+\.\s.+", block, re.MULTILINE)) for block in sub_blocks]
+    if all(blocks):
+        return "ordered_list"
+
+
 def block_to_block_type(block):
     match block:
         case _ if re.match(r"^```.*```$", block, re.DOTALL):
@@ -26,8 +40,11 @@ def block_to_block_type(block):
         case _ if re.match(r"^>\w+", block):
             return "quote"
 
-        case _ if re.match(r"^(\* |- )\w+", block, re.MULTILINE):
-            return "unordered_list"
+        case _ if block[0:2] == "* " or block[0:2] == "- ":
+            return unordered_list_checker(block)
+
+        case _ if block[0:3] == "1. ":
+            return ordered_list_checker(block)
 
         case _:
             print(f"block: {block}, type: paragraph")

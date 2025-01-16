@@ -40,9 +40,18 @@ class TestBlockToBlockType(unittest.TestCase):
         self.assertEqual(block_type, "quote")
 
     def test_unordered_list(self):
-        block = "* This is a unordered list"
-        block_2 = "- This is also an unordered list"
+        block = "* This is an unordered list\n* Next line"
+        block_2 = "- This is also an unordered list\n Next line"
         block_type = block_to_block_type(block)
         block_type_2 = block_to_block_type(block_2)
         self.assertEqual(block_type, "unordered_list")
         self.assertEqual(block_type_2, "unordered_list")
+
+
+    def test_ordered_list(self):
+        block = "1. This is a simple ordered list"
+        block_2 = "1. This is a multiline ordered list\n1. Next line"
+        block_type = block_to_block_type(block)
+        block_type_2 = block_to_block_type(block_2)
+        self.assertEqual(block_type, "ordered_list")
+        self.assertEqual(block_type_2, "ordered_list")
