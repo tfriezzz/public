@@ -5,11 +5,11 @@ from htmlnode import *
 from textnode import *
 from text_to_textnodes import *
 
-class BlockType(Enum):
+"""class BlockType(Enum):
     PARAGRAPH = "paragraph"
     HEADING = "heading"
     CODE = "code"
-        # Other block types...
+        # Other block types..."""
 
 def markdown_to_blocks(markdown):
     blocks = list(map(str.strip, (markdown.split("\n\n"))))
@@ -116,6 +116,12 @@ def markdown_to_html_node(markdown):
     return parent_node
 
 
+def extract_title(markdown):
+    pattern = r"^#\s+(.+)$"
+    blocks = markdown_to_blocks(markdown)
+    for block in blocks:
+        if re.match(pattern, block):
+            return block[2:]
 
 
 

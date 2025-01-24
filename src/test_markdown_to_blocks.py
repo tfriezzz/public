@@ -1,5 +1,6 @@
 import unittest
 from markdown_to_blocks import *
+from markdown_parser import *
 
 class TestMarkDownToBlock(unittest.TestCase):
     def simple_markdown_test(self):
@@ -92,3 +93,11 @@ class TestMarkdownToHTML(unittest.TestCase):
         
         expected_html = "<div><ol><li>item one</li><li>item two</li><li>item three</li></ol></div>"
         assert node.to_html() == expected_html
+
+
+class TestExtractTitle(unittest.TestCase):
+    def test_simple(self):
+        text = "# This is the title"
+        is_value = extract_title(text)
+        should_be_value = "This is the title"
+        self.assertEqual(should_be_value, is_value)

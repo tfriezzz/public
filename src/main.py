@@ -2,35 +2,32 @@ import os
 import shutil
 
 root_dir = os.getcwd()
-scrip_dir = os.path.join(root_dir, "src")
+script_dir = os.path.join(root_dir, "src")
 static_dir = os.path.join(root_dir, "static")
 public_dir = os.path.join(root_dir, "public")
 
 
-def tree_diver(filetree):
-    firtst_item = filetree[0]
-    current_path = os.join(src_path, firtst_item)
-    if os.path.isfile(firtst_item):
-        shutil.copy(current_path, dest_path)
-
-
 def copy_static(src_path, dest_path):
-    if os.path.exists(public_dir):
-        shutil.rmtree(public_dir)
-    dir_contents = os.listdir(src_path)
-    os.mkdir("public")
-    print(f"contents: {dir_contents}")
-    for content in dir_contents:
-        print(content)
-        if os.path.isfile(os.path.join(src_path, content)):
-            print(f"file: {content}")
-        if os.path.isdir(os.path.join(src_path, content)):
-            print(f"dir: {content}")
+    if os.path.isfile(src_path):
+        print(f"copying file: {src_path}")
+        shutil.copy(src_path, dest_path)
+        return
 
-    #shutil.copy(src_path, dest_path)
+    if os.path.isdir(src_path):
+        if not os.path.exists(dest_path):
+           os.mkdir(dest_path)
+
+        for item in os.listdir(src_path):
+            src_item_path = os.path.join(src_path, item)
+            dest_item_path = os.path.join(dest_path, item)
+            copy_static(src_item_path, dest_item_path)
+
 
 
 def main():
+    if os.path.exists(public_dir):
+        shutil.rmtree(public_dir)
+        print(f"deleting: {public_dir}")
     copy_static(static_dir, public_dir)
 
 main()

@@ -63,13 +63,7 @@ def split_nodes_link(old_nodes):
     return pieces
 
 
-"""def extract_markdown_images(text):
-    alt_text = re.findall(r"\[(.*?)\]", text)
-    url = re.findall(r"\((.*?)\)", text)
-    zipped_list = []
-    for alt, url in zip(alt_text, url):
-        zipped_list.append((alt, url))
-    return zipped_list"""
+
 
 def extract_markdown_images(text):
     pattern = r"!\[(.*?)\]\((.*?)\)"
