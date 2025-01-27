@@ -38,7 +38,7 @@ def block_to_block_type(block):
         case _ if re.match(r"^#{1,6}\s\w+", block):
             return "heading"
         
-        case _ if re.match(r"^>\w+", block):
+        case _ if re.match(r"^>\s*.+", block):
             return "quote"
 
         case _ if block[0:2] == "* " or block[0:2] == "- ":
@@ -48,7 +48,7 @@ def block_to_block_type(block):
            return ordered_list_checker(block)
 
         case _:
-            print(f"block: {block}, type: paragraph")
+            #print(f"block: {block}, type: paragraph")
             return "paragraph"
 
 
@@ -59,6 +59,7 @@ def text_to_children(text):
         html_node = text_node_to_html_node(text_node)
         children.append(html_node)
     return children
+
 
 def markdown_to_html_node(markdown):
     blocks = markdown_to_blocks(markdown)
@@ -85,12 +86,12 @@ def markdown_to_html_node(markdown):
                 heading_node = ParentNode(tag, children)
                 parent_node.children.append(heading_node)
             case "code":
-                children = text_to_children(block[3:-3])
-                code_node = ParentNode("code", children)
-                pre_node = ParentNode("pre", [code_node])
+                code_content = block[3:-3].strip()
+                code_text = LeafNode("code", code_content)
+                pre_node = ParentNode("pre", [code_text])
                 parent_node.children.append(pre_node)
             case "quote":
-                children = text_to_children(block[1:])  # Fix optional space
+                children = text_to_children(block[2:])  # Fix optional space
                 quote_node = ParentNode("blockquote", children)
                 parent_node.children.append(quote_node)
             case "unordered_list":

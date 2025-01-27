@@ -1,10 +1,15 @@
 import os
 import shutil
+from generate_page import generate_page
 
 root_dir = os.getcwd()
 script_dir = os.path.join(root_dir, "src")
 static_dir = os.path.join(root_dir, "static")
 public_dir = os.path.join(root_dir, "public")
+content_dir = os.path.join(root_dir, "content")
+content_path = os.path.join(content_dir, "index.md")
+destination_path = os.path.join(public_dir, "index.html")
+template_path = os.path.join(root_dir, "template.html")
 
 
 def copy_static(src_path, dest_path):
@@ -31,3 +36,4 @@ def main():
     copy_static(static_dir, public_dir)
 
 main()
+generate_page(content_path, template_path, destination_path)
