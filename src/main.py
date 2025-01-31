@@ -1,6 +1,6 @@
 import os
 import shutil
-from generate_page import generate_page
+from generate_page import generate_pages_recursive
 
 root_dir = os.getcwd()
 script_dir = os.path.join(root_dir, "src")
@@ -20,13 +20,12 @@ def copy_static(src_path, dest_path):
 
     if os.path.isdir(src_path):
         if not os.path.exists(dest_path):
-           os.mkdir(dest_path)
+            os.mkdir(dest_path)
 
         for item in os.listdir(src_path):
             src_item_path = os.path.join(src_path, item)
             dest_item_path = os.path.join(dest_path, item)
             copy_static(src_item_path, dest_item_path)
-
 
 
 def main():
@@ -35,5 +34,6 @@ def main():
         print(f"deleting: {public_dir}")
     copy_static(static_dir, public_dir)
 
+
 main()
-generate_page(content_path, template_path, destination_path)
+generate_pages_recursive(content_dir, template_path, public_dir)

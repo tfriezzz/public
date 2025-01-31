@@ -11,51 +11,49 @@ from text_to_textnodes import *
     CODE = "code"
         # Other block types..."""
 
+
 def markdown_to_blocks(markdown):
     blocks = list(map(str.strip, (markdown.split("\n\n"))))
     return blocks
 
 
 def unordered_list_checker(block):
-    sub_blocks = markdown_to_blocks(block)
-    for block in sub_blocks:
-        if re.match(r"^(\* |- )\w+", block, re.MULTILINE):
-            return "unordered_list"
+    lines = block.split("\n")
+    for line in lines:
+        if not re.match(r"^(\* |- )", line.strip()):
+            return None
+    return "unordered_list"
 
 
 def ordered_list_checker(block):
     sub_blocks = list(map(str.strip, (block.split("\n"))))
-    blocks = [bool(re.match(r"^\d+\.\s.+", block, re.MULTILINE)) for block in sub_blocks]
+    blocks = [
+        bool(re.match(r"^\d+\.\s.+", block, re.MULTILINE)) for block in sub_blocks
+    ]
     if all(blocks):
         return "ordered_list"
 
 
 def block_to_block_type(block):
-    match block:
-        case _ if re.match(r"^```.*```$", block, re.DOTALL):
-            return "code"
-            
-        case _ if re.match(r"^#{1,6}\s\w+", block):
-            return "heading"
-        
-        case _ if re.match(r"^>\s*.+", block):
-            return "quote"
-
-        case _ if block[0:2] == "* " or block[0:2] == "- ":
-            return unordered_list_checker(block)
-
-        case _ if block[0:3] == "1. ":
-           return ordered_list_checker(block)
-
-        case _:
-            #print(f"block: {block}, type: paragraph")
-            return "paragraph"
+    if block.startswith("```") and block.endswith("```"):
+        return "code"
+    elif re.match(r"^#{1,6}\s\w+", block):
+        return "heading"
+    elif all(re.match(r"^>\s*.+", line) for line in block.split("\n")):
+        return "quote"
+    elif block.startswith("* ") or block.startswith("- "):
+        return unordered_list_checker(block)
+    elif block.startswith("1. "):
+        return ordered_list_checker(block)
+    else:
+        return "paragraph"
 
 
 def text_to_children(text):
     text_nodes = text_to_textnodes(text)
     children = []
     for text_node in text_nodes:
+        # print(f"DEBUG child:{text_node}")
         html_node = text_node_to_html_node(text_node)
         children.append(html_node)
     return children
@@ -66,6 +64,8 @@ def markdown_to_html_node(markdown):
     parent_node = ParentNode("div", [])
     for block in blocks:
         block_type = block_to_block_type(block)
+        if block_type is None:
+            raise ValueError(f"Invalid block type for block: {block}")
         match block_type:
             case "paragraph":
                 children = text_to_children(block)
@@ -98,7 +98,7 @@ def markdown_to_html_node(markdown):
                 items = block.split("\n")
                 html_items = []
                 for item in items:
-                    text = item[2:]
+                    text = (item[1:]).lstrip()
                     children = text_to_children(text)
                     html_items.append(ParentNode("li", children))
                 unordered_list_node = ParentNode("ul", html_items)
@@ -123,8 +123,3 @@ def extract_title(markdown):
     for block in blocks:
         if re.match(pattern, block):
             return block[2:]
-
-
-
-
-

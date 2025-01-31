@@ -1,25 +1,33 @@
 from textnode import TextNode, TextType, text_node_to_html_node
 import re
 
+
 def split_nodes_delimiter(old_nodes, delimiter, text_type):
     new_nodes = []
     pattern = f"{re.escape(delimiter)}(.*?){re.escape(delimiter)}"
+    test_match = re.search(pattern, old_nodes[0].text)
 
     for node in old_nodes:
         match node.text_type:
             case TextType.TEXT:
                 current_index = 0
-                for delimiter_match in re.finditer(pattern, node.text):
+                matches = list(re.finditer(pattern, node.text))
+                for delimiter_match in matches:
                     match_start_index = delimiter_match.start()
                     if match_start_index > current_index:
-                        new_nodes.append(TextNode(node.text[current_index:match_start_index], TextType.TEXT))
+                        new_nodes.append(
+                            TextNode(
+                                node.text[current_index:match_start_index],
+                                TextType.TEXT,
+                            )
+                        )
                     new_nodes.append(TextNode(delimiter_match.group(1), text_type))
                     current_index = delimiter_match.end()
                 if current_index < len(node.text):
                     new_nodes.append(TextNode(node.text[current_index:], TextType.TEXT))
             case _:
                 new_nodes.append(node)
-    
+
     return new_nodes
 
 
@@ -61,8 +69,6 @@ def split_nodes_link(old_nodes):
         if node.text_type is not TextType.TEXT:
             pieces.append(node)
     return pieces
-
-
 
 
 def extract_markdown_images(text):
